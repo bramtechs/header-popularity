@@ -6,7 +6,13 @@ set(CMAKE_C_COMPILER clang)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(${PROJECT_NAME} main.m)
+add_executable(${PROJECT_NAME}
+  main.m
+  utils.h
+
+  FileCrawler.h
+  FileCrawler.m
+)
 target_compile_definitions(${PROJECT_NAME} PRIVATE
   -DGNUSTEP -DGNUSTEP_BASE_LIBRARY=1 -DGNU_GUI_LIBRARY=1 -DGNU_RUNTIME=1 -DGNUSTEP_BASE_LIBRARY=1
   -D_NATIVE_OBJC_EXCEPTIONS -DGSWARN -DGSDIAGNOSE
