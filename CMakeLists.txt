@@ -21,7 +21,6 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -I/usr/lib/gcc/x86_64-linux-gnu/13/include/
 )
 target_link_options(${PROJECT_NAME} PRIVATE
-  -L/home/bram/GNUstep/Library/Libraries
   -L/usr/lib/gcc/x86_64-linux-gnu/13
   -L/usr/local/lib -L/usr/lib
 )
