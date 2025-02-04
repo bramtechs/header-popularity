@@ -86,7 +86,10 @@
         return nil;
 
     NSRange headerRange = NSMakeRange(start.location + 1, end.location - start.location - 1);
-    return [line substringWithRange:headerRange];
+    NSString *headerPath = [line substringWithRange:headerRange];
+
+    // assuming all headers have unique file names...
+    return [headerPath lastPathComponent];
 }
 
 - (void)countIncludesOfFile:(NSString *)path total:(nonnull NSMutableDictionary<NSString *, NSNumber *> *)total

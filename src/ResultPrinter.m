@@ -79,7 +79,7 @@
 
         if (self.printFlames)
         {
-            int flames = fmax(0, valueCount / ((float)maxCount) - 0.5f) * 10;
+            int flames = (int)ceilf(fmax(0.f, valueCount / ((float)maxCount) - 0.5f) * 10.f);
             for (int j = 0; j < flames; ++j)
             {
                 strcat(buffer, "🔥");

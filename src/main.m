@@ -18,7 +18,7 @@ int main(int argc, const char *argv[])
     {
         if (argc <= 1)
         {
-            NSLog(@"No source folder passed!");
+            printf("header-popularity [SOURCE DIRS...] [OPT --verbose] [OPT --no-flames]\n");
             return EXIT_FAILURE;
         }
 
