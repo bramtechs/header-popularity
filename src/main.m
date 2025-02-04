@@ -45,6 +45,13 @@ int main(int argc, const char *argv[])
 
             [pop crawlDirectory:sourceDir];
         }
+
+        let results = [pop countIncludes];
+        for (NSString *key in results)
+        {
+            NSNumber *value = [results objectForKey:key];
+            NSLog(@"%@ -> %@ references", key, value);
+        }
     }
     return EXIT_SUCCESS;
 }

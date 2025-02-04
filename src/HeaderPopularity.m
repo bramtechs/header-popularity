@@ -6,11 +6,14 @@
  */
 
 #import "HeaderPopularity.h"
+#include "Foundation/NSDictionary.h"
+#include "Foundation/NSSet.h"
 
 @implementation HeaderPopularity
 
 @synthesize verbose = _verbose;
 @synthesize sourceFileExtensions = _sourceFileExtensions;
+@synthesize uniqueSourceFiles = _uniqueSourceFiles;
 
 - (nonnull instancetype)init
 {
@@ -18,6 +21,7 @@
     if (self)
     {
         self.verbose = NO;
+        self.uniqueSourceFiles = [NSMutableSet<NSString *> setWithCapacity:128];
         self.sourceFileExtensions = [NSMutableArray arrayWithCapacity:32];
         [self.sourceFileExtensions addObjectsFromArray:@[ @"cc", @"c", @"cpp", @"cxx", @"m", @"mm" ]];
     }
@@ -31,6 +35,8 @@
 
     if (self.verbose)
         NSLog(@">>> %@", filePath);
+
+    [self.uniqueSourceFiles addObject:filePath];
 }
 
 - (BOOL)hasSourceExtension:(NSString *)filePath
@@ -47,6 +53,17 @@
             return YES;
     }
     return NO;
+}
+
+- (NSMutableDictionary<NSString *, NSNumber *> *)countIncludes
+{
+    // TODO:
+    for (NSString *sourceFile in self.uniqueSourceFiles)
+    {
+        NSLog(@"%@", sourceFile);
+    }
+
+    return [NSMutableDictionary<NSString *, NSNumber *> dictionaryWithCapacity:32];
 }
 
 @end

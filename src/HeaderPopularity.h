@@ -14,11 +14,15 @@
 {
     BOOL _verbose;
     NSMutableArray<NSString *> *_sourceFileExtensions;
+    NSMutableSet<NSString *> *_uniqueSourceFiles;
 }
 
 @property(nonatomic, assign) BOOL verbose;
 @property(nonnull, nonatomic, strong) NSMutableArray<NSString *> *sourceFileExtensions;
+@property(nonnull, nonatomic, strong) NSMutableSet<NSString *> *uniqueSourceFiles;
 
 - (nonnull instancetype)init;
+
+- (nonnull NSMutableDictionary<NSString *, NSNumber *> *)countIncludes;
 
 @end
