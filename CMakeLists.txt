@@ -13,6 +13,9 @@ add_executable(${PROJECT_NAME}
   src/HeaderPopularity.h
   src/HeaderPopularity.m
 
+  src/ResultPrinter.h
+  src/ResultPrinter.m
+
   src/FileCrawler.h
   src/FileCrawler.m
 )
@@ -27,7 +30,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 target_compile_options(${PROJECT_NAME} PRIVATE
   -MP  -fno-strict-aliasing -fexceptions -fobjc-exceptions -pthread -fPIC -Wall
-  -Wno-import -g -O2 -fconstant-string-class=NSConstantString
+  -Wno-import -ggdb -O0 -fconstant-string-class=NSConstantString
   -I/usr/lib/gcc/x86_64-linux-gnu/13/include/
 )
 target_link_options(${PROJECT_NAME} PRIVATE

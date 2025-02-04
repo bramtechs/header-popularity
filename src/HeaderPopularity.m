@@ -6,8 +6,8 @@
  */
 
 #import "HeaderPopularity.h"
-#include "Foundation/NSDictionary.h"
-#include "Foundation/NSSet.h"
+#include "Foundation/NSCharacterSet.h"
+#include "Foundation/NSObjCRuntime.h"
 
 @implementation HeaderPopularity
 
@@ -55,15 +55,90 @@
     return NO;
 }
 
+- (BOOL)lineContainsInclude:(NSString *)line
+{
+    let searches = @[ @"#include", @"#import" ];
+    for (NSString *term in searches)
+    {
+        if ([line containsString:term])
+        {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSString *)determineHeaderFromIncludeLine:(NSString *)line
+{
+    NSCharacterSet *startSet = [NSCharacterSet characterSetWithCharactersInString:@"<\""];
+    NSRange start = [line rangeOfCharacterFromSet:startSet];
+    if (start.location == NSNotFound)
+        return nil;
+
+    NSCharacterSet *endSet = [NSCharacterSet characterSetWithCharactersInString:@">\""];
+    NSRange end = [line rangeOfCharacterFromSet:endSet
+                                        options:0
+                                          range:NSMakeRange(start.location + 1, line.length - start.location - 1)];
+    if (end.location == NSNotFound)
+        return nil;
+
+    if (end.location <= start.location + 1) // Ensure there's something between the delimiters
+        return nil;
+
+    NSRange headerRange = NSMakeRange(start.location + 1, end.location - start.location - 1);
+    return [line substringWithRange:headerRange];
+}
+
+- (void)countIncludesOfFile:(NSString *)path total:(nonnull NSMutableDictionary<NSString *, NSNumber *> *)total
+{
+    @autoreleasepool
+    {
+        NSError *error = nil;
+        NSString *fileContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+        if (fileContents == nil || error != nil)
+        {
+            NSLog(@"Failed to read file %@", path);
+            if (error != nil)
+                NSLog(@"error: %@", error.localizedDescription);
+            return;
+        }
+
+        let lines = [fileContents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        for (long lineNumber = 0; lineNumber < [lines count]; ++lineNumber)
+        {
+            NSString *line = [lines objectAtIndex:lineNumber];
+
+            if (![self lineContainsInclude:line])
+                continue;
+
+            let file = [self determineHeaderFromIncludeLine:line];
+            if (file == nil)
+            {
+                NSLog(@"%@:%ld Failed to determine file from include line '%@'", path, lineNumber, line);
+                continue;
+            }
+
+            if (self.verbose)
+                NSLog(@"Found reference to header '%@'", file);
+
+            NSNumber *curValue = [total objectForKey:file];
+            if (curValue)
+                [total setValue:@(curValue.integerValue + 1) forKey:file];
+            else
+                [total setValue:@1 forKey:file];
+        }
+    }
+}
+
 - (NSMutableDictionary<NSString *, NSNumber *> *)countIncludes
 {
-    // TODO:
+    let totalIncludes = [NSMutableDictionary<NSString *, NSNumber *> dictionaryWithCapacity:32];
     for (NSString *sourceFile in self.uniqueSourceFiles)
     {
-        NSLog(@"%@", sourceFile);
+        [self countIncludesOfFile:sourceFile total:totalIncludes];
     }
 
-    return [NSMutableDictionary<NSString *, NSNumber *> dictionaryWithCapacity:32];
+    return totalIncludes;
 }
 
 @end

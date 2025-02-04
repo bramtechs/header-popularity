@@ -6,6 +6,7 @@
  */
 
 #import "HeaderPopularity.h"
+#import "ResultPrinter.h"
 #import "utils.h"
 
 #import <Foundation/Foundation.h>
@@ -21,6 +22,7 @@ int main(int argc, const char *argv[])
             return EXIT_FAILURE;
         }
 
+        let printFlames = YES;
         let pop = [[HeaderPopularity alloc] init];
         NSMutableArray<NSString *> *sourceDirs = [NSMutableArray<NSString *> arrayWithCapacity:32];
 
@@ -30,6 +32,10 @@ int main(int argc, const char *argv[])
             {
                 [pop setVerbose:YES];
                 NSLog(@"Enabled verbose output");
+            }
+            else if (strcmp(argv[i], "--no-flames") == 0)
+            {
+                printFlames = NO;
             }
             else
             {
@@ -47,11 +53,12 @@ int main(int argc, const char *argv[])
         }
 
         let results = [pop countIncludes];
-        for (NSString *key in results)
-        {
-            NSNumber *value = [results objectForKey:key];
-            NSLog(@"%@ -> %@ references", key, value);
-        }
+        let printer = [[ResultPrinter alloc] init:results];
+        [printer setPrintFlames:printFlames];
+        [printer print];
+
+        if (pop.verbose)
+            NSLog(@"Done!");
     }
     return EXIT_SUCCESS;
 }

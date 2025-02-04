@@ -41,7 +41,7 @@
         }
         else
         {
-            [self processFile:child];
+            [self processFile:fullChild];
         }
     }
 }
