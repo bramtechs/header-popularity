@@ -10,6 +10,9 @@ add_executable(${PROJECT_NAME}
   src/main.m
   src/utils.h
 
+  src/HeaderPopularity.h
+  src/HeaderPopularity.m
+
   src/FileCrawler.h
   src/FileCrawler.m
 )

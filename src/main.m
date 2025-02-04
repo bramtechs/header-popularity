@@ -5,68 +5,11 @@
  * File created on: 04-02-2025
  */
 
-#import "FileCrawler.h"
+#import "HeaderPopularity.h"
 #import "utils.h"
 
 #import <Foundation/Foundation.h>
 #import <stdlib.h>
-
-@interface HeaderPopularity : FileCrawler
-{
-    BOOL _verbose;
-    NSMutableArray<NSString *> *_sourceFileExtensions;
-}
-
-@property(nonatomic, assign) BOOL verbose;
-@property(nonnull, nonatomic, strong) NSMutableArray<NSString *> *sourceFileExtensions;
-
-- (instancetype)init;
-
-@end
-
-@implementation HeaderPopularity
-
-@synthesize verbose = _verbose;
-@synthesize sourceFileExtensions = _sourceFileExtensions;
-
-- (nonnull instancetype)init
-{
-    self = [super init];
-    if (self)
-    {
-        self.verbose = NO;
-        self.sourceFileExtensions = [NSMutableArray arrayWithCapacity:32];
-        [self.sourceFileExtensions addObjectsFromArray:@[ @"cc", @"c", @"cpp", @"cxx", @"m", @"mm" ]];
-    }
-    return self;
-}
-
-- (void)processFile:(NSString *)filePath
-{
-    if (![self hasSourceExtension:filePath])
-        return;
-
-    if (self.verbose)
-        NSLog(@">>> %@", filePath);
-}
-
-- (BOOL)hasSourceExtension:(NSString *)filePath
-{
-    for (NSString *ext in self.sourceFileExtensions)
-    {
-        NSString *extWithDot;
-        if ([ext hasPrefix:@"."])
-            extWithDot = ext;
-        else
-            extWithDot = [NSString stringWithFormat:@".%@", ext];
-
-        if ([filePath hasSuffix:extWithDot])
-            return YES;
-    }
-    return NO;
-}
-
-@end
 
 int main(int argc, const char *argv[])
 {
